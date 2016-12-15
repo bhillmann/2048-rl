@@ -10,7 +10,7 @@ class Twenty48(Game):
     any tiles.
     """
 
-    def __init__(self, grid_size=4, state=None, initial_score=0):
+    def __init__(self, grid_size=4, state=None, initial_score=0, num_moves=0):
         """Init the Game object.
         Args:
           state: Shape (4, 4) numpy array to initialize the state with. If None,
@@ -21,6 +21,7 @@ class Twenty48(Game):
         self._score = initial_score
         self._reward = 0.
         self.game_over = None
+        self._num_moves = num_moves
 
 
         if state is None:
@@ -33,7 +34,7 @@ class Twenty48(Game):
             self.game_over = self._is_over()
 
     def copy(self):
-        return Twenty48(state=np.copy(self.grid), initial_score=self._score)
+        return Twenty48(state=np.copy(self.grid), initial_score=self._score, num_moves=self._num_moves)
 
     @property
     def nb_actions(self):
@@ -89,6 +90,7 @@ class Twenty48(Game):
         """
         Reset the game
         """
+        self._num_moves = 0
         self.game_over = False
         self.grid = np.zeros(shape=self.grid_size).astype('int')
         self.add_random_tile()
@@ -145,6 +147,7 @@ class Twenty48(Game):
             self.add_random_tile()
             if self._is_over():
                 self.game_over = True
+            self._num_moves += 1
             return True
         else:
             return False
@@ -156,7 +159,6 @@ class Twenty48(Game):
         for action in xrange(self.nb_actions):
             if self.is_action_available(action):
                 return False
-        print(np.max(self.grid))
         return True
 
     def shift(self, way, axis, grid):
