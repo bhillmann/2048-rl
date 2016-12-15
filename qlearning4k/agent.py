@@ -57,7 +57,7 @@ class Agent:
     def clear_frames(self):
         self.frames = None
 
-    def train(self, game, nb_epoch=1000, batch_size=50, gamma=0.9, epsilon=[1., .1], epsilon_rate=0.5,
+    def train(self, game, nb_epoch=1000, batch_size=50, gamma=0.99, epsilon=[1., .1], epsilon_rate=0.5,
               reset_memory=False, observe=0, checkpoint=None):
         self.check_game_compatibility(game)
         if type(epsilon) in {tuple, list}:
