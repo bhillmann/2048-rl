@@ -12,8 +12,8 @@ grid_size = 4
 hidden_size = 128
 nb_frames = 1
 memory = ExperienceReplay(50000, fast=None)
-nb_epoch = 20
-observe = 10
+nb_epoch = 250000
+observe = 100
 
 twenty48 = Twenty48(grid_size=grid_size)
 
@@ -38,11 +38,12 @@ def agent_play_wrapper(agent):
         s = s.reshape(1, 1, 4, 4)
         q_prime = model.predict(s)[0]
         q_prime = q_prime.argsort()
+        a = actions[0]
         for i in q_prime:
             if i in actions:
                 a = i
                 break
-        return i
+        return a
     return play_agent
 
 results = play(Twenty48(), agent_play_wrapper(agent))
