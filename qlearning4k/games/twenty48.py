@@ -98,8 +98,8 @@ class Twenty48(Game):
         """
         Reset the game
         """
-        if not self.grid == None:
-            print(2**np.max(self.grid))
+        # if not self.grid == None:
+            #print(2**np.max(self.grid))
         self._num_moves = 0
         self.game_over = False
         self.grid = np.zeros(shape=self.grid_size).astype('int')
@@ -204,5 +204,5 @@ class Twenty48(Game):
         x_pos, y_pos = np.where(self.grid == 0)
         assert len(x_pos) != 0
         empty_index = np.random.choice(len(x_pos))
-        value = np.random.choice([1,2], p=[0.9, 0.1])
+        value = np.random.choice([1, 2], p=[0.9, 0.1])
         self.grid[x_pos[empty_index], y_pos[empty_index]] = value
