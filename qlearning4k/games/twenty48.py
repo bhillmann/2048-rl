@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from scipy import signal
 
 from .game import Game
 
@@ -73,15 +74,22 @@ class Twenty48(Game):
         return False
 
     def get_state(self):
-        return self.grid
+        x = np.sum(self.grid, axis=1).flatten()
+        y = np.sum(self.grid, axis=0).flatten()
+        z = signal.convolve2d(self.grid, np.array([[1, 1], [1, 1]]), mode='valid').flatten()
+        return np.hstack([x, y, z])
+        # return self.grid
 
     def get_score(self):
-        if self.game_over:
-            return -1.
-        elif self._reward == 0:
-            return 0
+        if self._reward == 0:
+            return 0.
         else:
+            # print(np.log2(self._reward)/11.)
             return np.log2(self._reward)/11.
+        # if self._reward > 0:
+        #     return np.log2(self._reward)
+        # return 0
+        # return np.max(self.grid)/11.
 
     def is_won(self):
         return np.max(self.grid) >= 11
@@ -90,6 +98,8 @@ class Twenty48(Game):
         """
         Reset the game
         """
+        if not self.grid == None:
+            print(2**np.max(self.grid))
         self._num_moves = 0
         self.game_over = False
         self.grid = np.zeros(shape=self.grid_size).astype('int')

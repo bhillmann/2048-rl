@@ -82,12 +82,12 @@ class Agent:
                     a = int(np.random.choice(game.get_possible_actions()))
                 else:
                     q_prime = model.predict(S)[0]
-                    q = np.zeros(game.nb_actions)
                     possible_actions = game.get_possible_actions()
-                    for i in possible_actions:
-                        q[i] = q_prime[i]
-                    q = [q_prime[i] for i in possible_actions]
-                    a = np.argmax(q)
+                    q_prime = q_prime.argsort()
+                    for i in q_prime:
+                        if i in possible_actions:
+                            a = i
+                            break
                 game.play(a)
                 r = game.get_score()
                 S_prime = self.get_game_data(game)
@@ -127,12 +127,12 @@ class Agent:
                     action = int(np.random.choice(game.get_possible_actions()))
                 else:
                     q_prime = model.predict(S)[0]
-                    q = np.zeros(game.nb_actions)
                     possible_actions = game.get_possible_actions()
-                    for i in possible_actions:
-                        q[i] = q_prime[i]
-                    q = [q_prime[i] for i in possible_actions]
-                    action = np.argmax(q)
+                    q_prime = q_prime.argsort()
+                    for i in q_prime:
+                        if i in possible_actions:
+                            action = i
+                            break
                 game.play(action)
                 S = self.get_game_data(game)
                 if visualize:
