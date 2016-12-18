@@ -3,12 +3,11 @@ import numpy as np
 
 from scipy.stats import mannwhitneyu
 
-from bokeh.models import FuncTickFormatter
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure, show, output_file
 
-names = ['random_strategy', 'cyclic', 'greedy', 'all_h', 'num_zeros_border', 'snake', 'smooth']
-plt_names = ['Random', 'Cyclic', 'Greedy', 'Expectimax (All Heuristics)', 'Expectimax (Number Zeros & Border)', 'Expectimax (Snake)', 'Expectimax (Smooth)']
+names = ['rl', 'random_strategy', 'cyclic', 'greedy', 'all_h', 'num_zeros_border', 'snake', 'smooth']
+plt_names = ['Reinforcement Learner', 'Random', 'Cyclic', 'Greedy', 'Expectimax (All Heuristics)', 'Expectimax (Number Zeros & Border)', 'Expectimax (Snake)', 'Expectimax (Smooth)']
 
 random = np.loadtxt('random_strategy.csv', delimiter=',')
 test_distribution = np.log2(random[:, 3])
