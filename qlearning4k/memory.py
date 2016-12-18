@@ -1,9 +1,10 @@
-import numpy as np
 from random import sample
+
+import numpy as np
 from keras import backend as K
 
-class Memory:
 
+class Memory:
     def __init__(self):
         pass
 

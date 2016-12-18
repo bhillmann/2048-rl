@@ -106,8 +106,8 @@ class Agent:
                 win_count += 1
             if epsilon > final_epsilon and epoch >= observe:
                 epsilon -= delta
-            print("Epoch {:03d}/{:03d} | Loss {:.4f} | Epsilon {:.2f} | Win count {}".format(epoch + 1, nb_epoch, loss,
-                                                                                             epsilon, win_count))
+            print("Epoch {:03d}/{:03d} | Loss {:.4f} | Epsilon {:.2f} | Win count {} | Score {:d} | Max Tile {:d}".format(epoch + 1, nb_epoch, loss,
+                                                                                             epsilon, win_count, game._score, np.max(game.grid)))
 
     def play(self, game, nb_epoch=10, epsilon=0., visualize=True):
         self.check_game_compatibility(game)

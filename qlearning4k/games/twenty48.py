@@ -74,11 +74,11 @@ class Twenty48(Game):
         return False
 
     def get_state(self):
-        x = np.sum(self.grid, axis=1).flatten()
-        y = np.sum(self.grid, axis=0).flatten()
-        z = signal.convolve2d(self.grid, np.array([[1, 1], [1, 1]]), mode='valid').flatten()
-        return np.hstack([x, y, z])
-        # return self.grid
+        # x = np.sum(self.grid, axis=1).flatten()
+        # y = np.sum(self.grid, axis=0).flatten()
+        # z = signal.convolve2d(self.grid, np.array([[1, 1], [1, 1]]), mode='valid').flatten()
+        # return np.hstack([x, y, z])
+        return self.grid
 
     def get_score(self):
         if self._reward == 0:

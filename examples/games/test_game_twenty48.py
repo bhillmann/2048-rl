@@ -1,4 +1,4 @@
-from qlearning4k.games import Twenty48
+from qlearning4k.games.twenty48 import Twenty48
 
 game_matrix = Twenty48()
 print(game_matrix.grid)

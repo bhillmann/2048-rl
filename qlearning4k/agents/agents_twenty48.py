@@ -8,7 +8,7 @@ import time
 import math
 import itertools
 import numpy as np
-from qlearning4k.games import Twenty48
+from qlearning4k.games.twenty48 import Twenty48
 
 
 def random_strategy(_, actions):
