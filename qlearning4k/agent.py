@@ -6,7 +6,7 @@ import os
 
 
 class Agent:
-    def __init__(self, model, memory=None, memory_size=1000, nb_frames=None):
+    def __init__(self, model, memory=None, memory_size=1000, nb_frames=None, baseline=None):
         assert len(model.output_shape) == 2, "Model's output shape should be (nb_samples, nb_actions)."
         if memory:
             self.memory = memory
@@ -21,6 +21,10 @@ class Agent:
         self.model = model
         self.nb_frames = nb_frames
         self.frames = None
+        if baseline:
+            self.baseline = baseline
+        else:
+            self.baseline = lambda game, possible_actions:  int(np.random.choice(possible_actions))
 
     @property
     def memory_size(self):
@@ -57,7 +61,7 @@ class Agent:
     def clear_frames(self):
         self.frames = None
 
-    def train(self, game, nb_epoch=1000, batch_size=50, gamma=0.99, epsilon=[1., .1], epsilon_rate=0.5,
+    def train(self, game, nb_epoch=1000, batch_size=50, gamma=1., epsilon=[1., .1], epsilon_rate=0.5,
               reset_memory=False, observe=0, checkpoint=None):
         self.check_game_compatibility(game)
         if type(epsilon) in {tuple, list}:
@@ -79,7 +83,7 @@ class Agent:
             S = self.get_game_data(game)
             while not game_over:
                 if np.random.random() < epsilon or epoch < observe:
-                    a = int(np.random.choice(game.get_possible_actions()))
+                    a = self.baseline(game, game.get_possible_actions())
                 else:
                     q_prime = model.predict(S)[0]
                     possible_actions = game.get_possible_actions()
@@ -124,7 +128,7 @@ class Agent:
             while not game_over:
                 if np.random.rand() < epsilon:
                     print("random")
-                    action = int(np.random.choice(game.get_possible_actions()))
+                    action = self.baseline(game, game.get_possible_actions())
                 else:
                     q_prime = model.predict(S)[0]
                     possible_actions = game.get_possible_actions()

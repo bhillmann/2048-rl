@@ -1,6 +1,4 @@
 import numpy as np
-import random
-from scipy import signal
 
 from .game import Game
 
@@ -83,15 +81,15 @@ class Twenty48(Game):
     def get_score(self):
         # if self.game_over:
         #     return -1.
-        # if self._reward == 0:
-        #     return 0.
-        # else:
-        #     # print(np.log2(self._reward)/11.)
-        #     return np.log2(self._reward)
+        if self._reward == 0:
+            return 0.
+        else:
+            # print(np.log2(self._reward)/11.)
+            return np.log2(self._reward)/11.
         # if self._reward > 0:
         #     return np.log2(self._reward)
         # return 0
-        return np.max(self.grid)/11.
+        # return np.max(self.grid)/11.
 
     def is_won(self):
         return np.max(self.grid) >= 11

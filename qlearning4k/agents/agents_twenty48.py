@@ -111,7 +111,7 @@ def np_on_edge(state):
     return s
 
 
-def expecti(heuristic, d=6):
+def expecti(heuristic, d=5):
     """
     Performs expectimax search on a given configuration to
     specified depth (d).

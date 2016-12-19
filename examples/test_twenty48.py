@@ -10,7 +10,7 @@ from qlearning4k.agents.agents_twenty48 import play, expecti, num_zeros, np_on_e
 import numpy as np
 
 grid_size = 4
-hidden_size = 128
+hidden_size = 256
 nb_frames = 1
 memory = ExperienceReplay(50000, fast=None)
 nb_epoch = 10000
@@ -23,13 +23,13 @@ def num_zeros_border(state):
     return num_zeros(state) + np_on_edge(state)
 
 model = Sequential()
-model.add(Convolution2D(512, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
-model.add(Convolution2D(1024, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name)))
+# model.add(Convolution2D(512, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
+# model.add(Convolution2D(1024, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name)))
 # model.add(Convolution2D(8, 2, 2, activation='relu',  init=lambda shape, name: normal(shape, scale=0.01, name=name)))
-# model.add(Flatten(input_shape=(nb_frames, grid_size, grid_size)))
-model.add(Flatten())
+model.add(Flatten(input_shape=(nb_frames, grid_size, grid_size)))
+# model.add(Flatten())
+model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='relu'))
 model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='softmax'))
-# model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='softmax'))
 model.add(Dense(twenty48.nb_actions))
 model.compile(Adam(lr=1e-4), "mse")
 
