@@ -81,15 +81,17 @@ class Twenty48(Game):
         return self.grid
 
     def get_score(self):
-        if self._reward == 0:
-            return 0.
-        else:
-            # print(np.log2(self._reward)/11.)
-            return np.log2(self._reward)/11.
+        # if self.game_over:
+        #     return -1.
+        # if self._reward == 0:
+        #     return 0.
+        # else:
+        #     # print(np.log2(self._reward)/11.)
+        #     return np.log2(self._reward)
         # if self._reward > 0:
         #     return np.log2(self._reward)
         # return 0
-        # return np.max(self.grid)/11.
+        return np.max(self.grid)/11.
 
     def is_won(self):
         return np.max(self.grid) >= 11
@@ -102,6 +104,7 @@ class Twenty48(Game):
             #print(2**np.max(self.grid))
         self._num_moves = 0
         self.game_over = False
+        self._score = 0
         self.grid = np.zeros(shape=self.grid_size).astype('int')
         self.add_random_tile()
         self.add_random_tile()
