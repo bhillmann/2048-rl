@@ -1,11 +1,11 @@
 from keras.models import Sequential
 from keras.initializations import normal
-from keras.layers import Flatten, Dense, Convolution2D
+from keras.layers import Flatten, Dense, Convolution2D, MaxPooling2D
 from qlearning4k.games.twenty48 import Twenty48
 from keras.optimizers import *
 from qlearning4k.agent import Agent
 from qlearning4k.memory import ExperienceReplay
-from qlearning4k.agents.agents_twenty48 import play, expecti, num_zeros, np_on_edge, highest_reward_strategy
+from qlearning4k.agents.agents_twenty48 import play, random_strategy, num_zeros, np_on_edge, highest_reward_strategy
 
 import numpy as np
 
@@ -23,20 +23,21 @@ def num_zeros_border(state):
     return num_zeros(state) + np_on_edge(state)
 
 model = Sequential()
-# model.add(Convolution2D(512, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
-# model.add(Convolution2D(1024, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name)))
+model.add(Convolution2D(32, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
+model.add(Convolution2D(64, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name)))
 # model.add(Convolution2D(8, 2, 2, activation='relu',  init=lambda shape, name: normal(shape, scale=0.01, name=name)))
-model.add(Flatten(input_shape=(nb_frames, grid_size, grid_size)))
-# model.add(Flatten())
-model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='relu'))
+# model.add(Flatten(input_shape=(nb_frames, grid_size, grid_size)))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='default'))
+model.add(Flatten())
 model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='softmax'))
+# model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='softmax'))
 model.add(Dense(twenty48.nb_actions))
 model.compile(Adam(lr=1e-4), "mse")
 
-# print(model.summary())
+print(model.summary())
 
 # agent = Agent(model=model, memory=memory, nb_frames=nb_frames, baseline=expecti(num_zeros_border))
-agent = Agent(model=model, memory=memory, nb_frames=nb_frames, baseline=highest_reward_strategy)
+agent = Agent(model=model, memory=memory, nb_frames=nb_frames, baseline=random_strategy)
 agent.train(twenty48, batch_size=32, nb_epoch=nb_epoch, observe=observe, epsilon=[0.1, 0.], checkpoint=1000)
 
 def agent_play_wrapper(agent):

@@ -4,6 +4,7 @@ import numpy as np
 from numpy import convolve
 import matplotlib.pyplot as plt
 import re
+import os
 
 
 def movingaverage(values, window):
@@ -14,9 +15,9 @@ def movingaverage(values, window):
 
 comp_re = re.compile(r"[^0-9]")
 
-plt.style.use('seaborn-deep')
+plt.style.use('ggplot')
 
-files = ['cnn_training_results.txt', 'nn_training_results.txt']
+files = [os.path.join('../results', 'cnn_training_results.txt'), os.path.join('../results', 'nn_training_results.txt')]
 
 training_scores = []
 for file in files:
@@ -35,8 +36,8 @@ x = np.arange(10000)
 # plt.plot(x, y)
 # plt.show()
 
-cnn = movingaverage(y[:, 0], 100)
-nn = movingaverage(y[:, 1], 100)
+cnn = movingaverage(y[:, 0], 500)
+nn = movingaverage(y[:, 1], 500)
 random = [np.log2(53.35)]*len(cnn)
 greedy = [np.log2(91.68)]*len(cnn)
 
