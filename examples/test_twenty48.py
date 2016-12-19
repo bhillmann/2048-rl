@@ -12,24 +12,26 @@ grid_size = 4
 hidden_size = 128
 nb_frames = 1
 memory = ExperienceReplay(50000, fast=None)
-nb_epoch = 250000
+nb_epoch = 10000
 observe = 100
 
 twenty48 = Twenty48(grid_size=grid_size)
 
 model = Sequential()
-# model.add(Convolution2D(32, 2, 2, activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
-# model.add(Convolution2D(16, 2, 2, activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name)))
+model.add(Convolution2D(512, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
+model.add(Convolution2D(1024, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name)))
 # model.add(Convolution2D(8, 2, 2, activation='relu',  init=lambda shape, name: normal(shape, scale=0.01, name=name)))
-model.add(Flatten(input_shape=(nb_frames, grid_size, grid_size)))
-model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='relu'))
+# model.add(Flatten(input_shape=(nb_frames, grid_size, grid_size)))
+model.add(Flatten())
 model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='softmax'))
+# model.add(Dense(hidden_size, init=lambda shape, name: normal(shape, scale=0.01, name=name), activation='softmax'))
 model.add(Dense(twenty48.nb_actions))
-model.compile(Adam(lr=1e-6), "mse")
+model.compile(Adam(lr=1e-4), "mse")
 
+# print(model.summary())
 
 agent = Agent(model=model, memory=memory, nb_frames=nb_frames)
-agent.train(twenty48, batch_size=32, nb_epoch=nb_epoch, observe=observe, epsilon=[0., 0.], checkpoint=10000)
+agent.train(twenty48, batch_size=32, nb_epoch=nb_epoch, observe=observe, epsilon=[0., 0.], checkpoint=1000)
 
 def agent_play_wrapper(agent):
     def play_agent(state, actions):
@@ -48,4 +50,4 @@ def agent_play_wrapper(agent):
 
 results = play(Twenty48(), agent_play_wrapper(agent))
 np.savetxt('rl.csv', results, delimiter=',', header='score,moves,time,max_tile')
-# agent.play(twenty48, visualize=False)
+# # agent.play(twenty48, visualize=False)
