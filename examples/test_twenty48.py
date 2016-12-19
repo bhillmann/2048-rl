@@ -5,7 +5,8 @@ from qlearning4k.games.twenty48 import Twenty48
 from keras.optimizers import *
 from qlearning4k.agent import Agent
 from qlearning4k.memory import ExperienceReplay
-from qlearning4k.agents.agents_twenty48 import play
+from qlearning4k.agents.agents_twenty48 import play, expecti, num_zeros, np_on_edge, highest_reward_strategy
+
 import numpy as np
 
 grid_size = 4
@@ -13,9 +14,13 @@ hidden_size = 128
 nb_frames = 1
 memory = ExperienceReplay(50000, fast=None)
 nb_epoch = 10000
-observe = 100
+observe = 10
 
 twenty48 = Twenty48(grid_size=grid_size)
+
+
+def num_zeros_border(state):
+    return num_zeros(state) + np_on_edge(state)
 
 model = Sequential()
 model.add(Convolution2D(512, 2, 2, subsample=(1, 1), activation='relu', init=lambda shape, name: normal(shape, scale=0.01, name=name), input_shape=(nb_frames, grid_size, grid_size)))
@@ -30,8 +35,9 @@ model.compile(Adam(lr=1e-4), "mse")
 
 # print(model.summary())
 
-agent = Agent(model=model, memory=memory, nb_frames=nb_frames)
-agent.train(twenty48, batch_size=32, nb_epoch=nb_epoch, observe=observe, epsilon=[0., 0.], checkpoint=1000)
+# agent = Agent(model=model, memory=memory, nb_frames=nb_frames, baseline=expecti(num_zeros_border))
+agent = Agent(model=model, memory=memory, nb_frames=nb_frames, baseline=highest_reward_strategy)
+agent.train(twenty48, batch_size=32, nb_epoch=nb_epoch, observe=observe, epsilon=[0.1, 0.], checkpoint=1000)
 
 def agent_play_wrapper(agent):
     def play_agent(state, actions):
