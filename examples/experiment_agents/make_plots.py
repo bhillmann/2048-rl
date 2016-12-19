@@ -2,9 +2,9 @@ import os.path
 import numpy as np
 
 from scipy.stats import mannwhitneyu
+import matplotlib.pyplot as plt
 
-from bokeh.layouts import gridplot
-from bokeh.plotting import figure, show, output_file
+plt.style.use('seaborn-deep')
 
 names = ['rl', 'random_strategy', 'cyclic', 'greedy', 'all_h', 'num_zeros_border', 'snake', 'smooth']
 plt_names = ['Reinforcement Learner', 'Random', 'Cyclic', 'Greedy', 'Expectimax (All Heuristics)', 'Expectimax (Number Zeros & Border)', 'Expectimax (Snake)', 'Expectimax (Smooth)']
@@ -22,11 +22,11 @@ for plt_name, name in zip(plt_names, names):
         results = np.loadtxt(filename, delimiter=',')
         plt = figure(title=plt_name, tools="save")
         bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        hist, edges = np.histogram(np.log2(results[:, 3]), density=True, bins=bins)
-        plt.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:])
+        # hist, edges = np.histogram(np.hstack(test_distribution), np.log2(results[:, 3])), density=True, bins=bins)
+        plt.hist(np.hstack(test_distribution), np.log2(results[:, 3]), bins, label=['Random', plt_name])
         plt.xaxis.axis_label = 'Max Tile'
-        plt.yaxis.axis_label = 'Pr(Max Tile)'
-        plts.append(plt)
+        plt.yaxis.axis_label = 'Number of Games'
+        plt.show()
         avg_time_per_move = np.mean(results[:, 2]/results[:, 1])
         max_score = np.max(results[:, 0])
         max_tile = np.max(results[:, 3])
